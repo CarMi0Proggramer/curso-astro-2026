@@ -1,0 +1,266 @@
+---
+import { Image } from "astro:assets";
+
+const {
+  title,
+  description,
+  image,
+  slug,
+  categories = [],
+  imageLoading = "lazy",
+} = Astro.props;
+---
+
+<article class="post-card">
+  {
+    image && (
+      <div class="card-media">
+        <Image
+          height={360}
+          width={256}
+          src={image}
+          alt={title}
+          loading={imageLoading}
+          decoding="async"
+          class="card-img"
+        />
+        <div class="card-media-gradient" />
+      </div>
+    )
+  }
+
+  <div class="card-body">
+    {
+      categories && categories.length > 0 && (
+        <div class="card-categories" aria-label="Categorías">
+          {categories.map((category: string) => (
+            <span class="category-pill">{category}</span>
+          ))}
+        </div>
+      )
+    }
+
+    <h3 class="card-title">
+      <a href={`/posts/${slug}/`} class="card-title-link">
+        {title}
+      </a>
+    </h3>
+
+    {description && <p class="card-excerpt">{description}</p>}
+
+    <div class="card-footer">
+      <a
+        href={`/posts/${slug}/`}
+        class="card-cta"
+        aria-label={`Leer artículo: ${title}`}
+      >
+        <span>Leer publicación</span>
+        <svg
+          class="card-cta-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z"
+            clip-rule="evenodd"></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+</article>
+
+<style>
+  .post-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: #080918;
+    background: linear-gradient(
+      180deg,
+      rgba(14, 16, 42, 0.8) 0%,
+      rgba(7, 8, 24, 0.95) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow:
+      0 10px 30px -10px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.03);
+    transition:
+      transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+
+  .post-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(129, 140, 248, 0.45);
+    box-shadow:
+      0 20px 40px -12px rgba(0, 0, 0, 0.8),
+      0 0 25px -2px rgba(13, 0, 164, 0.35);
+  }
+
+  /* Contenedor multimedia */
+  .card-media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background-color: #0d0f28;
+  }
+
+  .card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .post-card:hover .card-img {
+    transform: scale(1.04);
+  }
+
+  .card-media-gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      transparent 55%,
+      rgba(8, 9, 24, 0.75) 100%
+    );
+    pointer-events: none;
+  }
+
+  /* Cuerpo de la tarjeta */
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 1.5rem;
+  }
+
+  /* Categorías */
+  .card-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .category-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.65rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: #a5b4fc;
+    background: rgba(99, 102, 241, 0.12);
+    border: 1px solid rgba(129, 140, 248, 0.2);
+    border-radius: 9999px;
+  }
+
+  /* Título */
+  .card-title {
+    margin: 0 0 0.75rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: -0.02em;
+  }
+
+  .card-title-link {
+    color: #f8fafc;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .card-title-link:hover,
+  .post-card:hover .card-title-link {
+    color: #818cf8;
+  }
+
+  .card-title-link:focus-visible {
+    outline: 2px solid var(--navy-electric);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Extracto / Descripción */
+  .card-excerpt {
+    color: #94a3b8;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    margin: 0 0 1.5rem;
+    flex-grow: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Pie de tarjeta */
+  .card-footer {
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #818cf8;
+    text-decoration: none;
+    transition:
+      color 0.2s ease,
+      gap 0.2s ease;
+  }
+
+  .card-cta-icon {
+    width: 1.1rem;
+    height: 1.1rem;
+    transition: transform 0.25s ease;
+  }
+
+  .post-card:hover .card-cta {
+    color: #c7d2fe;
+    gap: 0.7rem;
+  }
+
+  .post-card:hover .card-cta-icon {
+    transform: translateX(4px);
+  }
+
+  .card-cta:focus-visible {
+    outline: 2px solid var(--navy-electric);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  @media (max-width: 640px) {
+    .card-body {
+      padding: 1.25rem;
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+    }
+
+    .card-excerpt {
+      font-size: 0.875rem;
+      margin-bottom: 1.25rem;
+    }
+  }
+</style>

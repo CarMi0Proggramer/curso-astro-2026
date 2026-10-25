@@ -1,0 +1,70 @@
+---
+interface Props {
+  href: string;
+  text: string;
+}
+
+const { href, text } = Astro.props;
+const isExternal = href?.startsWith("http");
+---
+
+<li>
+  <a
+    href={href}
+    class="social-item"
+    target={isExternal ? "_blank" : undefined}
+    rel={isExternal ? "noopener noreferrer" : undefined}
+  >
+    <slot name="icon" />
+    <span>{text}</span>
+  </a>
+</li>
+
+<style>
+  .social-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.95rem;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-full);
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    box-shadow: var(--shadow-sm);
+    transition:
+      color var(--transition-fast),
+      background-color var(--transition-fast),
+      border-color var(--transition-fast),
+      transform var(--transition-fast),
+      box-shadow var(--transition-fast);
+  }
+
+  .social-item:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-glow);
+  }
+
+  .social-item:hover :global(svg) {
+    stroke: var(--color-primary);
+  }
+
+  .social-item :global(svg) {
+    flex-shrink: 0;
+    transition: stroke var(--transition-fast);
+  }
+
+  .social-item:active {
+    transform: translateY(0);
+  }
+
+  .social-item:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+</style>

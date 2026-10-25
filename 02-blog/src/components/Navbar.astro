@@ -1,0 +1,178 @@
+---
+const { pathname } = Astro.url;
+
+const navItems = [
+  { href: "/", label: "Inicio" },
+  { href: "/posts", label: "Posts" },
+];
+---
+
+<header class="navbar-header">
+  <nav class="navbar" aria-label="Navegación principal">
+    <a href="/" class="brand" aria-label="Ir al inicio">
+      <svg
+        class="brand-icon"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 640 640"
+        aria-hidden="true"
+      >
+        <path
+          d="M288 88C288 74.7 298.7 64 312 64C457.8 64 576 182.2 576 328C576 341.3 565.3 352 552 352C538.7 352 528 341.3 528 328C528 208.7 431.3 112 312 112C298.7 112 288 101.3 288 88zM144 160C170.5 160 192 181.5 192 208L192 432C192 458.5 213.5 480 240 480C266.5 480 288 458.5 288 432C288 405.5 266.5 384 240 384C231.2 384 224 376.8 224 368L224 304C224 295.2 231.2 288 240 288C319.5 288 384 352.5 384 432C384 511.5 319.5 576 240 576C160.5 576 96 511.5 96 432L96 208C96 181.5 117.5 160 144 160zM312 160C404.8 160 480 235.2 480 328C480 341.3 469.3 352 456 352C442.7 352 432 341.3 432 328C432 261.7 378.3 208 312 208C298.7 208 288 197.3 288 184C288 170.7 298.7 160 312 160z"
+        ></path>
+      </svg>
+      <span class="brand-name">DevLab</span>
+    </a>
+
+    <ul class="nav-links">
+      {
+        navItems.map((item) => {
+          const isActive =
+            item.href === "/"
+              ? pathname === "/"
+              : pathname.startsWith(item.href);
+
+          return (
+            <li>
+              <a
+                href={item.href}
+                class:list={["nav-link", { active: isActive }]}
+                aria-current={isActive ? "page" : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </nav>
+</header>
+
+<style>
+  .navbar-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    width: 100%;
+    background-color: rgba(var(--prussian-blue-rgb), 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(var(--navy-rgb), 0.4);
+    box-shadow: 0 4px 20px -2px rgba(var(--black-rgb), 0.7);
+    transition:
+      background-color 0.25s ease,
+      border-color 0.25s ease;
+  }
+
+  .navbar {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0.85rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    text-decoration: none;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1.25rem;
+    letter-spacing: -0.02em;
+    transition:
+      transform 0.2s ease,
+      opacity 0.2s ease;
+  }
+
+  .brand:hover {
+    opacity: 0.95;
+    transform: translateY(-1px);
+  }
+
+  .brand-icon {
+    width: 1.9rem;
+    height: 1.9rem;
+    fill: #ffffff;
+    filter: drop-shadow(0 0 8px rgba(var(--navy-electric-rgb), 0.7));
+    transition:
+      transform 0.25s ease,
+      filter 0.25s ease;
+  }
+
+  .brand:hover .brand-icon {
+    transform: scale(1.08) rotate(3deg);
+    filter: drop-shadow(0 0 14px rgba(var(--navy-electric-rgb), 1));
+  }
+
+  .brand-name {
+    background: linear-gradient(135deg, #ffffff 40%, #c7d2fe 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-link {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    color: #cbd5e1;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: 9999px;
+    border: 1px solid transparent;
+    transition:
+      color 0.2s ease,
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .nav-link:hover {
+    color: #ffffff;
+    background-color: rgba(var(--deep-twilight-rgb), 0.5);
+    border-color: rgba(var(--navy-rgb), 0.4);
+  }
+
+  .nav-link.active {
+    color: #ffffff;
+    background-color: rgba(var(--navy-rgb), 0.5);
+    border-color: rgba(var(--navy-electric-rgb), 0.6);
+    box-shadow: 0 0 16px -2px rgba(var(--navy-electric-rgb), 0.45);
+  }
+
+  .brand:focus-visible,
+  .nav-link:focus-visible {
+    outline: 2px solid var(--navy-electric);
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 640px) {
+    .navbar {
+      padding: 0.75rem 1rem;
+    }
+
+    .brand-name {
+      font-size: 1.1rem;
+    }
+
+    .nav-links {
+      gap: 0.25rem;
+    }
+
+    .nav-link {
+      padding: 0.4rem 0.75rem;
+      font-size: 0.9rem;
+    }
+  }
+</style>

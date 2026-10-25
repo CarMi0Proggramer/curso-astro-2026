@@ -1,0 +1,25 @@
+{
+  "projects": [
+    {
+      "name": "Portfolio personal",
+      "description": "Sitio web personal para presentar proyectos y experiencia.",
+      "imageUrl": "/images/portfolio.jpg",
+      "link": "https://example.com/portfolio",
+      "skills": ["Astro", "JavaScript", "CSS"]
+    },
+    {
+      "name": "Aplicación de tareas",
+      "description": "Aplicación para organizar tareas y hacer seguimiento del progreso.",
+      "imageUrl": "/images/task-app.jpg",
+      "link": "https://example.com/task-app",
+      "skills": ["React", "TypeScript", "Tailwind CSS"]
+    },
+    {
+      "name": "Tienda en línea",
+      "description": "Tienda web con catálogo de productos y una experiencia de compra sencilla.",
+      "imageUrl": "/images/online-store.jpg",
+      "link": "https://example.com/online-store",
+      "skills": ["Next.js", "Node.js", "PostgreSQL"]
+    }
+  ]
+}

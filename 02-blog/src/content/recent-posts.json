@@ -1,0 +1,23 @@
+[
+  {
+    "title": "Astro: sitios web rápidos y modernos",
+    "description": "Descubre cómo Astro ayuda a crear sitios web modernos con excelente rendimiento y una experiencia de desarrollo sencilla.",
+    "image": "/images/astro-web.jpg",
+    "slug": "astro-sitios-web-rapidos-modernos",
+    "categories": ["Astro", "Desarrollo web"]
+  },
+  {
+    "title": "Inteligencia artificial en el desarrollo de software",
+    "description": "Explora cómo la inteligencia artificial está transformando la forma de escribir, probar y mantener código.",
+    "image": "/images/ia-desarrollo-software.jpg",
+    "slug": "inteligencia-artificial-desarrollo-software",
+    "categories": ["Inteligencia artificial", "Programación"]
+  },
+  {
+    "title": "Cómo proteger tus aplicaciones web",
+    "description": "Conoce prácticas esenciales para mejorar la seguridad de tus aplicaciones, desde validar datos hasta gestionar credenciales.",
+    "image": "/images/seguridad-aplicaciones-web.jpg",
+    "slug": "como-proteger-aplicaciones-web",
+    "categories": ["Ciberseguridad", "Desarrollo web"]
+  }
+]

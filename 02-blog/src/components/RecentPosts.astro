@@ -1,0 +1,379 @@
+---
+import SearchBar from "./SearchBar.astro";
+import PostCard from "./PostCard.astro";
+import { getCollection } from "astro:content";
+
+const {
+  badge = "Publicaciones",
+  title = "Artículos recientes",
+  description = "Explora las últimas publicaciones del blog sobre desarrollo web, inteligencia artificial y tecnología.",
+} = Astro.props;
+
+const query = Astro.url.searchParams.get("q")?.toLowerCase().trim() ?? "";
+
+const posts = await getCollection("recentPosts");
+---
+
+<section id="posts" class="recent-posts-section">
+  <div class="section-ambient-glow" aria-hidden="true"></div>
+
+  <div class="section-container">
+    <header class="section-header">
+      {
+        badge && (
+          <div class="section-badge">
+            <span class="badge-dot" />
+            <span>{badge}</span>
+          </div>
+        )
+      }
+      <h2 class="section-title">
+        <span class="title-gradient">{title}</span>
+      </h2>
+      <p class="section-description">
+        {description}
+      </p>
+    </header>
+
+    <div class="search-wrapper">
+      <SearchBar />
+    </div>
+
+    {
+      query && (
+        <div class="filter-status">
+          <p class="filter-text">
+            Mostrando resultados para: <strong>"{query}"</strong>
+            <span class="filter-count">
+              ({posts.length} {posts.length === 1 ? "artículo" : "artículos"})
+            </span>
+          </p>
+          <a href={Astro.url.pathname} class="clear-filter-btn">
+            Limpiar filtro
+          </a>
+        </div>
+      )
+    }
+
+    {
+      posts.length > 0 ? (
+        <ul class="posts-grid" aria-label="Lista de artículos">
+          {posts.map((post) => (
+            <li data-title={post.data.title} class="post-grid-item">
+              <PostCard {...post.data} />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div class="empty-state">
+          <div class="empty-icon-box">
+            <svg
+              class="empty-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
+          </div>
+          <h3 class="empty-title">No se encontraron artículos</h3>
+          <p class="empty-message">
+            {query
+              ? `No encontramos resultados que coincidan con "${query}". Intenta buscar con otros términos.`
+              : "Pronto compartiremos nuevas publicaciones en este espacio."}
+          </p>
+          {query && (
+            <a href={Astro.url.pathname} class="reset-search-btn">
+              Ver todos los artículos
+            </a>
+          )}
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const searchTerm = params.get("q")?.trim();
+  const postGrid = document.getElementsByClassName("posts-grid")[0];
+  const postItems = document.getElementsByClassName("post-grid-item");
+
+  for (const postItem of postItems) {
+    if (postItem instanceof HTMLElement) {
+      const title = postItem.dataset.title ?? "";
+
+      if (!searchTerm) {
+        postItem.style.display = "flex";
+        continue;
+      }
+
+      if (title.toLowerCase().includes(searchTerm.toLowerCase())) {
+        postItem.style.display = "flex";
+      } else {
+        postItem.style.display = "none";
+      }
+    }
+  }
+
+  if (postGrid instanceof HTMLElement && typeof searchTerm === "string") {
+    const postsGridRect = postGrid.getBoundingClientRect();
+
+    window.scrollTo({
+      top: postsGridRect.top,
+    });
+  }
+</script>
+
+<style>
+  .recent-posts-section {
+    position: relative;
+    padding: 5rem 1.5rem 6rem;
+    overflow: hidden;
+  }
+
+  /* Resplandor ambiental de fondo suavizado con máscara */
+  .section-ambient-glow {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 900px;
+    height: 380px;
+    background: radial-gradient(
+      ellipse 60% 50% at 50% 40%,
+      rgba(var(--navy-rgb), 0.3) 0%,
+      rgba(var(--deep-twilight-rgb), 0.18) 45%,
+      transparent 70%
+    );
+    -webkit-mask-image: radial-gradient(
+      ellipse 60% 50% at 50% 50%,
+      black 20%,
+      transparent 75%
+    );
+    mask-image: radial-gradient(
+      ellipse 60% 50% at 50% 50%,
+      black 20%,
+      transparent 75%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .section-container {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Cabecera */
+  .section-header {
+    text-align: center;
+    max-width: 680px;
+    margin: 0 auto 1.5rem;
+  }
+
+  .section-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.95rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #a5b4fc;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(129, 140, 248, 0.2);
+    border-radius: 9999px;
+    margin-bottom: 1.25rem;
+  }
+
+  .badge-dot {
+    width: 6px;
+    height: 6px;
+    background-color: #818cf8;
+    border-radius: 50%;
+    box-shadow: 0 0 6px #818cf8;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    margin: 0 0 0.85rem;
+  }
+
+  .title-gradient {
+    background: linear-gradient(135deg, #ffffff 40%, #c7d2fe 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .section-description {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: #94a3b8;
+    margin: 0;
+  }
+
+  /* Buscador wrapper */
+  .search-wrapper {
+    margin: 1.5rem 0 2rem;
+  }
+
+  /* Estado del filtro cuando hay búsqueda activa */
+  .filter-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 0.75rem 1.25rem;
+    background: rgba(var(--prussian-blue-rgb), 0.5);
+    border: 1px solid rgba(var(--navy-rgb), 0.4);
+    border-radius: 12px;
+    margin-bottom: 2rem;
+  }
+
+  .filter-text {
+    margin: 0;
+    font-size: 0.925rem;
+    color: #cbd5e1;
+  }
+
+  .filter-text strong {
+    color: #ffffff;
+  }
+
+  .filter-count {
+    color: #818cf8;
+    margin-left: 0.35rem;
+  }
+
+  .clear-filter-btn {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #a5b4fc;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+  }
+
+  .clear-filter-btn:hover {
+    color: #ffffff;
+  }
+
+  /* Grilla de posts */
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+    gap: 2rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .post-grid-item {
+    display: flex;
+    height: 100%;
+  }
+
+  /* Estado Vacío */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 1.5rem;
+    background: rgba(14, 16, 42, 0.4);
+    border: 1px dashed rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    margin-top: 2rem;
+  }
+
+  .empty-icon-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(129, 140, 248, 0.2);
+    border-radius: 50%;
+    margin-bottom: 1.25rem;
+    color: #818cf8;
+  }
+
+  .empty-icon {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
+  .empty-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 0.5rem;
+  }
+
+  .empty-message {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    max-width: 440px;
+    margin: 0 0 1.5rem;
+    line-height: 1.5;
+  }
+
+  .reset-search-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.65rem 1.4rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #ffffff;
+    background: linear-gradient(
+      135deg,
+      var(--deep-twilight) 0%,
+      var(--navy) 60%,
+      var(--navy-electric) 100%
+    );
+    border: 1px solid rgba(var(--navy-electric-rgb), 0.6);
+    border-radius: 9999px;
+    text-decoration: none;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .reset-search-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(var(--navy-electric-rgb), 0.5);
+  }
+
+  @media (max-width: 768px) {
+    .recent-posts-section {
+      padding: 3.5rem 1rem 4.5rem;
+    }
+
+    .posts-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .filter-status {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+  }
+</style>

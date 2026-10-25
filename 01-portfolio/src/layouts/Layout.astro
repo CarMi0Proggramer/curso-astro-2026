@@ -1,0 +1,100 @@
+---
+import { Font } from "astro:assets";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <title>Carlos Miguel | Desarrollador Web FullStack</title>
+    <Font cssVariable="--font-inter" />
+  </head>
+  <body>
+    <header>
+      <Navbar />
+    </header>
+    <slot />
+    <Footer />
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --bg-primary: #0a0f1d;
+    --bg-secondary: #111827;
+    --bg-card: #1e293b;
+    --bg-nav: rgba(10, 15, 29, 0.75);
+    --bg-hover: rgba(56, 189, 248, 0.12);
+
+    --color-primary: #38bdf8;
+    --color-primary-hover: #0ea5e9;
+    --color-secondary: #818cf8;
+    --color-accent: #2dd4bf;
+    --gradient-primary: linear-gradient(
+      135deg,
+      var(--color-primary),
+      var(--color-secondary)
+    );
+
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+
+    --border-color: rgba(255, 255, 255, 0.08);
+    --border-color-hover: rgba(56, 189, 248, 0.35);
+
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3);
+    --shadow-glow: 0 0 20px rgba(56, 189, 248, 0.25);
+
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --radius-full: 9999px;
+
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: var(--font-inter);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    scroll-behavior: smooth;
+    color-scheme: dark;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+  }
+
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+    pointer-events: none;
+  }
+
+  header > * {
+    pointer-events: auto;
+  }
+</style>

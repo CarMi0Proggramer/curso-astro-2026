@@ -1,0 +1,58 @@
+---
+import { getCollection } from "astro:content";
+import SearchBar from "../../components/SearchBar.astro";
+import Layout from "../../layouts/Layout.astro";
+import PostCard from "../../components/PostCard.astro";
+
+const posts = await getCollection("posts");
+---
+
+<Layout>
+  <SearchBar />
+  <main class="posts-grid">
+    {
+      posts.map((post) => (
+        <section data-title={post.data.title} class="post-grid-item">
+          <PostCard {...post.data} imageLoading="eager" />
+        </section>
+      ))
+    }
+  </main>
+</Layout>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const searchTerm = params.get("q")?.trim() ?? "";
+  const postItems = document.getElementsByClassName("post-grid-item");
+
+  for (const postItem of postItems) {
+    if (postItem instanceof HTMLElement) {
+      const title = postItem.dataset.title ?? "";
+
+      if (title.toLowerCase().includes(searchTerm.toLowerCase())) {
+        postItem.style.display = "flex";
+      } else {
+        postItem.style.display = "none";
+      }
+    }
+  }
+</script>
+
+<style>
+  /* Grilla de posts */
+  .posts-grid {
+    display: grid;
+    place-content: center;
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+    gap: 2rem;
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    max-width: 1288px;
+  }
+
+  .post-grid-item {
+    display: flex;
+    height: 100%;
+  }
+</style>

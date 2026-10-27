@@ -21,21 +21,31 @@ const posts = await getCollection("posts");
 </Layout>
 
 <script>
-  const params = new URLSearchParams(window.location.search);
-  const searchTerm = params.get("q")?.trim() ?? "";
-  const postItems = document.getElementsByClassName("post-grid-item");
+  function main() {
+    const params = new URLSearchParams(window.location.search);
+    const searchTerm = params.get("q")?.trim() ?? "";
+    const postItems = document.getElementsByClassName("post-grid-item");
 
-  for (const postItem of postItems) {
-    if (postItem instanceof HTMLElement) {
-      const title = postItem.dataset.title ?? "";
+    for (const postItem of postItems) {
+      if (postItem instanceof HTMLElement) {
+        const title = postItem.dataset.title ?? "";
 
-      if (title.toLowerCase().includes(searchTerm.toLowerCase())) {
-        postItem.style.display = "flex";
-      } else {
-        postItem.style.display = "none";
+        if (title.toLowerCase().includes(searchTerm.toLowerCase())) {
+          postItem.style.display = "flex";
+        } else {
+          postItem.style.display = "none";
+        }
       }
     }
   }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    main();
+  });
+
+  document.addEventListener("astro:after-swap", () => {
+    main();
+  });
 </script>
 
 <style>

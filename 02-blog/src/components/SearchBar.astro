@@ -39,12 +39,22 @@ const { placeholder = "Buscar publicaciones, temas o tecnologías..." } =
 </div>
 
 <script>
-  const searchInput = document.getElementById("searchInput");
+  function main() {
+    const searchInput = document.getElementById("searchInput");
 
-  if (searchInput instanceof HTMLInputElement) {
-    const query = new URLSearchParams(window.location.search).get("q") ?? "";
-    searchInput.value = query;
+    if (searchInput instanceof HTMLInputElement) {
+      const query = new URLSearchParams(window.location.search).get("q") ?? "";
+      searchInput.value = query;
+    }
   }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    main();
+  });
+
+  document.addEventListener("astro:after-swap", () => {
+    main();
+  });
 </script>
 
 <style>

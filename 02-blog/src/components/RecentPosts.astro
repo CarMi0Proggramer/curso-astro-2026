@@ -100,35 +100,45 @@ const posts = await getCollection("recentPosts");
 </section>
 
 <script>
-  const params = new URLSearchParams(window.location.search);
-  const searchTerm = params.get("q")?.trim();
-  const postGrid = document.getElementsByClassName("posts-grid")[0];
-  const postItems = document.getElementsByClassName("post-grid-item");
+  function main() {
+    const params = new URLSearchParams(window.location.search);
+    const searchTerm = params.get("q")?.trim();
+    const postGrid = document.getElementsByClassName("posts-grid")[0];
+    const postItems = document.getElementsByClassName("post-grid-item");
 
-  for (const postItem of postItems) {
-    if (postItem instanceof HTMLElement) {
-      const title = postItem.dataset.title ?? "";
+    for (const postItem of postItems) {
+      if (postItem instanceof HTMLElement) {
+        const title = postItem.dataset.title ?? "";
 
-      if (!searchTerm) {
-        postItem.style.display = "flex";
-        continue;
+        if (!searchTerm) {
+          postItem.style.display = "flex";
+          continue;
+        }
+
+        if (title.toLowerCase().includes(searchTerm.toLowerCase())) {
+          postItem.style.display = "flex";
+        } else {
+          postItem.style.display = "none";
+        }
       }
+    }
 
-      if (title.toLowerCase().includes(searchTerm.toLowerCase())) {
-        postItem.style.display = "flex";
-      } else {
-        postItem.style.display = "none";
-      }
+    if (postGrid instanceof HTMLElement && typeof searchTerm === "string") {
+      const postsGridRect = postGrid.getBoundingClientRect();
+
+      window.scrollTo({
+        top: postsGridRect.top,
+      });
     }
   }
 
-  if (postGrid instanceof HTMLElement && typeof searchTerm === "string") {
-    const postsGridRect = postGrid.getBoundingClientRect();
+  document.addEventListener("DOMContentLoaded", () => {
+    main();
+  });
 
-    window.scrollTo({
-      top: postsGridRect.top,
-    });
-  }
+  document.addEventListener("astro:after-swap", () => {
+    main();
+  });
 </script>
 
 <style>

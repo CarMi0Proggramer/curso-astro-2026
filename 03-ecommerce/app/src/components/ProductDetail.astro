@@ -1,0 +1,135 @@
+---
+import { Image } from "astro:assets";
+import CategoryBadge from "./CategoryBadge.astro";
+import AddToCartButton from "./AddToCartButton.astro";
+import { blocksToParagraphs } from "../utils/strapi-blocks";
+import { formatPrice } from "../utils/format-price";
+
+const { product } = Astro.props;
+
+const stock = product.stock ?? 0;
+const isInStock = stock > 0;
+const paragraphs = blocksToParagraphs(product.description);
+---
+
+<article class="product-detail">
+  <div class="product-detail__media">
+    <Image
+      class="product-detail__image"
+      src={product.image}
+      alt={product.name}
+      width={720}
+      height={720}
+      loading="eager"
+      decoding="async"
+    />
+  </div>
+
+  <div class="product-detail__info">
+    {product.category && <CategoryBadge name={product.category.name} />}
+
+    <h1 class="product-detail__title">{product.name}</h1>
+
+    <p class="product-detail__price">{formatPrice(product.price)}</p>
+
+    <p
+      class:list={[
+        "product-detail__stock",
+        { "product-detail__stock--out": !isInStock },
+      ]}
+    >
+      {isInStock ? `${stock} disponibles` : "Agotado"}
+    </p>
+
+    {
+      paragraphs.length > 0 && (
+        <div class="product-detail__description">
+          {paragraphs.map((paragraph) => (
+            <p>{paragraph}</p>
+          ))}
+        </div>
+      )
+    }
+
+    {
+      isInStock && (
+        <AddToCartButton
+          documentId={product.documentId}
+          productName={product.name}
+        />
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .product-detail {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+
+  @media (min-width: 768px) {
+    .product-detail {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+    }
+  }
+
+  .product-detail__media {
+    aspect-ratio: 1 / 1;
+    padding: var(--space-lg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .product-detail__image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: var(--radius-sm);
+  }
+
+  .product-detail__info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-md);
+  }
+
+  .product-detail__title {
+    margin: 0;
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+    font-weight: 800;
+    line-height: 1.2;
+  }
+
+  .product-detail__price {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 800;
+  }
+
+  .product-detail__stock {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+
+  .product-detail__stock--out {
+    color: var(--color-accent);
+    font-weight: 600;
+  }
+
+  .product-detail__description {
+    color: var(--color-text-muted);
+  }
+
+  .product-detail__description p {
+    margin: 0 0 var(--space-sm);
+  }
+</style>

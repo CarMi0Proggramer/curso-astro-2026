@@ -1,0 +1,80 @@
+---
+import { Font } from "astro:assets";
+import { SEO } from "astro-seo";
+import { $auth } from "../stores/auth";
+
+const { title = "Shop" } = Astro.props;
+
+if (Astro.session) {
+  await Astro.session?.get("auth")?.then((auth) => {
+    $auth.set({
+      isLoggedIn: Boolean(auth),
+    });
+  });
+}
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="generator" content={Astro.generator} />
+    <Font cssVariable="--font-inter" preload />
+    <SEO title={title} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --color-bg: #0d0f14;
+    --color-surface: #161922;
+    --color-surface-hover: #1f2330;
+    --color-border: #262b38;
+    --color-text: #e8eaf0;
+    --color-text-muted: #9aa0b0;
+    --color-primary: #6366f1;
+    --color-primary-hover: #7c7ff5;
+    --color-primary-contrast: #ffffff;
+    --color-accent: #22d3ee;
+    --font-base: var(--font-inter), system-ui, sans-serif;
+    --max-width: 1200px;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 2rem;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-base);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+</style>

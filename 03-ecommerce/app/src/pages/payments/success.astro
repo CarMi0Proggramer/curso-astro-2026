@@ -1,0 +1,144 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import { $cart } from "../../stores/cart";
+import Stripe from "stripe";
+
+const sessionId = Astro.url.searchParams.get("session_id");
+const stripe = new Stripe(import.meta.env.STRIPE_SECRET);
+
+if (sessionId) {
+  const checkoutSession = await stripe.checkout.sessions.retrieve(sessionId);
+  if (checkoutSession.payment_status === "paid") {
+    if (Astro.session) {
+      Astro.session?.delete("cart");
+    }
+
+    $cart.set({ itemCount: 0 });
+  }
+}
+---
+
+<Layout title="Pago exitoso — Shop">
+  <Navbar />
+  <main class="payment-success">
+    <section
+      class="payment-success__card"
+      aria-labelledby="payment-success-title"
+    >
+      <svg
+        class="payment-success__icon"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        width="56"
+        height="56"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <circle cx="12" cy="12" r="10"></circle>
+        <path d="M8 12.5l2.5 2.5L16 9.5"></path>
+      </svg>
+
+      <h1 id="payment-success-title" class="payment-success__title">
+        ¡Pago realizado con éxito!
+      </h1>
+      <p class="payment-success__message">
+        Gracias por tu compra. Recibimos tu pago y estamos preparando tu pedido.
+      </p>
+
+      <div class="payment-success__actions">
+        <a
+          class="payment-success__btn payment-success__btn--primary"
+          href="/products"
+        >
+          Seguir comprando
+        </a>
+        <a class="payment-success__btn" href="/">Volver al inicio</a>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .payment-success {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: calc(var(--space-lg) * 3) var(--space-lg);
+    display: flex;
+    justify-content: center;
+  }
+
+  .payment-success__card {
+    max-width: 32rem;
+    width: 100%;
+    padding: calc(var(--space-lg) * 1.5) var(--space-lg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-md);
+    text-align: center;
+  }
+
+  .payment-success__icon {
+    color: var(--color-primary);
+  }
+
+  .payment-success__title {
+    margin: 0;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 800;
+  }
+
+  .payment-success__message {
+    margin: 0;
+    color: var(--color-text-muted);
+    max-width: 44ch;
+  }
+
+  .payment-success__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-md);
+    margin-top: var(--space-sm);
+  }
+
+  .payment-success__btn {
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease;
+  }
+
+  .payment-success__btn:hover {
+    background-color: var(--color-surface-hover);
+    border-color: var(--color-primary);
+  }
+
+  .payment-success__btn--primary {
+    border-color: var(--color-primary);
+    background-color: var(--color-primary);
+    color: var(--color-primary-contrast);
+  }
+
+  .payment-success__btn--primary:hover {
+    background-color: var(--color-primary-hover);
+  }
+
+  .payment-success__btn:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+</style>

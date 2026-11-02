@@ -1,0 +1,142 @@
+---
+const { title, subtitle } = Astro.props;
+---
+
+<section class="auth">
+  <div class="auth__card">
+    <header class="auth__header">
+      <h1 class="auth__title">{title}</h1>
+      {subtitle && <p class="auth__subtitle">{subtitle}</p>}
+    </header>
+
+    <slot />
+  </div>
+</section>
+
+<style>
+  .auth {
+    min-height: calc(100vh - 77px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-lg);
+    background:
+      radial-gradient(
+        circle at 50% 0%,
+        rgba(99, 102, 241, 0.12),
+        transparent 55%
+      ),
+      var(--color-bg);
+  }
+
+  .auth__card {
+    width: 100%;
+    max-width: 24rem;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: calc(var(--space-lg) * 1.25);
+  }
+
+  .auth__header {
+    margin-bottom: var(--space-lg);
+    text-align: center;
+  }
+
+  .auth__title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 800;
+  }
+
+  .auth__subtitle {
+    margin: var(--space-sm) 0 0;
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+  }
+
+  /* Estilos de formulario compartidos por login y signup.
+     Se exponen con :global para que apliquen al markup inyectado por el slot. */
+  .auth__card :global(.auth-form) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .auth__card :global(.auth-form__field) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .auth__card :global(.auth-form__label) {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .auth__card :global(.auth-form__input) {
+    width: 100%;
+    padding: 0.7rem 0.85rem;
+    font-size: 0.9375rem;
+    color: var(--color-text);
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+
+  .auth__card :global(.auth-form__input::placeholder) {
+    color: var(--color-text-muted);
+  }
+
+  .auth__card :global(.auth-form__input:focus) {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+  }
+
+  .auth__card :global(.auth-form__submit) {
+    margin-top: var(--space-sm);
+    padding: 0.8rem 1rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-primary-contrast);
+    background-color: var(--color-primary);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+
+  .auth__card :global(.auth-form__submit:hover) {
+    background-color: var(--color-primary-hover);
+  }
+
+  .auth__card :global(.auth-form__alt) {
+    margin: var(--space-md) 0 0;
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+
+  .auth__card :global(.auth-form__link) {
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  .auth__card :global(.auth-form__link:hover) {
+    color: var(--color-primary-hover);
+    text-decoration: underline;
+  }
+
+  .auth__card :global(.auth-form__error) {
+    display: block;
+    margin-top: 0.35rem;
+    color: #dc2626;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+</style>

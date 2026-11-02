@@ -1,0 +1,61 @@
+---
+const { documentId, productName } = Astro.props;
+---
+
+<button
+  type="button"
+  id="addToCartButton"
+  class="add-to-cart"
+  data-document-id={documentId}
+  aria-label={`Agregar ${productName} al carrito`}
+>
+  Agregar al carrito
+</button>
+
+<script>
+  import { actions } from "astro:actions";
+  import { $cart } from "../stores/cart";
+
+  const button = document.getElementById("addToCartButton");
+  if (button instanceof HTMLButtonElement) {
+    button.addEventListener("click", async () => {
+      const documentId = button.dataset.documentId;
+      if (!documentId) return;
+
+      const { data, error } = await actions.cart.increaseQuantity({
+        documentId,
+      });
+
+      if (error) {
+        console.error("No se pudo agregar el producto al carrito", error);
+        return;
+      }
+
+      $cart.set({ itemCount: data.itemCount });
+    });
+  }
+</script>
+
+<style>
+  .add-to-cart {
+    width: 100%;
+    border: none;
+    background-color: var(--color-primary);
+    color: var(--color-primary-contrast);
+    font: inherit;
+    font-weight: 700;
+    padding: 0.85rem var(--space-lg);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+
+  .add-to-cart:hover {
+    background-color: var(--color-primary-hover);
+  }
+
+  .add-to-cart:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+</style>

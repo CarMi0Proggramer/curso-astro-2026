@@ -1,0 +1,164 @@
+---
+import { Image } from "astro:assets";
+import CategoryBadge from "./CategoryBadge.astro";
+import { blocksToPlainText } from "../utils/strapi-blocks";
+import { formatPrice } from "../utils/format-price";
+
+const {
+  name,
+  slug,
+  image,
+  price,
+  description,
+  stock = 0,
+  category,
+} = Astro.props;
+
+const plainDescription = blocksToPlainText(description);
+
+const isInStock = stock > 0;
+---
+
+<article class="product-card">
+  <a class="product-card__link" href={`/products/${slug}`}>
+    <div class="product-card__media">
+      <Image
+        class="product-card__image"
+        src={image}
+        alt={name}
+        width={400}
+        height={400}
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+
+    <div class="product-card__body">
+      {category && <CategoryBadge name={category.name} />}
+
+      <h3 class="product-card__title">{name}</h3>
+      <p class="product-card__description">{plainDescription}</p>
+
+      <footer class="product-card__footer">
+        <span class="product-card__price">
+          {formatPrice(price)}
+        </span>
+        <span
+          class:list={[
+            "product-card__stock",
+            { "product-card__stock--out": !isInStock },
+          ]}
+        >
+          {isInStock ? `${stock} disponibles` : "Agotado"}
+        </span>
+      </footer>
+    </div>
+  </a>
+</article>
+
+<style>
+  .product-card {
+    height: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface);
+    overflow: hidden;
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease,
+      transform 0.15s ease;
+  }
+
+  .product-card:hover,
+  .product-card:focus-within {
+    background-color: var(--color-surface-hover);
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+  }
+
+  .product-card__link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .product-card__link:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+    border-radius: var(--radius-md);
+  }
+
+  .product-card__media {
+    aspect-ratio: 1 / 1;
+    padding: var(--space-lg);
+    background-color: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .product-card__image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: var(--radius-sm);
+  }
+
+  .product-card__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+  }
+
+  .product-card__title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .product-card__description {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .product-card__footer {
+    margin-top: auto;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    padding-top: var(--space-sm);
+  }
+
+  .product-card__price {
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: var(--color-text);
+  }
+
+  .product-card__stock {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  .product-card__stock--out {
+    color: var(--color-accent);
+  }
+</style>

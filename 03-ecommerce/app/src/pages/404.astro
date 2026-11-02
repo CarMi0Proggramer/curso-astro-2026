@@ -1,0 +1,18 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import ErrorState from "../components/ErrorState.astro";
+---
+
+<Layout title="Página no encontrada — Shop">
+  <Navbar />
+  <main>
+    <ErrorState
+      statusCode={404}
+      title="Página no encontrada"
+      message="La página que buscas no existe o fue movida. Revisa la dirección o vuelve al inicio para seguir explorando."
+    >
+      <a slot="actions" href="/#products">Ver productos</a>
+    </ErrorState>
+  </main>
+</Layout>

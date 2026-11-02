@@ -1,0 +1,170 @@
+---
+import { $auth } from "../stores/auth";
+const isLoggedIn = $auth.get().isLoggedIn;
+---
+
+<section class="hero">
+  <div class="hero__glow" aria-hidden="true"></div>
+
+  <div class="hero__inner">
+    <div class="hero__content">
+      <p class="hero__eyebrow">✦ Nueva colección 2026</p>
+
+      <h1 class="hero__title">
+        Descubre productos que
+        <span class="hero__highlight"> amarás</span>
+      </h1>
+
+      <p class="hero__subtitle">
+        Explora nuestro catálogo cuidadosamente seleccionado y encuentra justo
+        lo que buscas, al mejor precio y con envío a todo el país.
+      </p>
+
+      <div class="hero__actions">
+        <a class="hero__btn hero__btn--primary" href="/products">
+          Ver productos
+        </a>
+        {
+          !isLoggedIn && (
+            <a class="hero__btn hero__btn--ghost" href="/auth/signup">
+              Crear cuenta
+            </a>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--color-border);
+    background:
+      radial-gradient(
+        circle at 50% -10%,
+        rgba(99, 102, 241, 0.18),
+        transparent 55%
+      ),
+      var(--color-bg);
+  }
+
+  .hero__glow {
+    position: absolute;
+    top: -30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70%;
+    height: 420px;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(34, 211, 238, 0.14),
+      transparent 70%
+    );
+    pointer-events: none;
+    filter: blur(10px);
+  }
+
+  .hero__inner {
+    position: relative;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: calc(var(--space-lg) * 3) var(--space-lg);
+  }
+
+  .hero__content {
+    max-width: 44rem;
+    margin: 0 auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-md);
+  }
+
+  .hero__eyebrow {
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.85rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background-color: var(--color-surface);
+    color: var(--color-accent);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    font-size: 0.8125rem;
+  }
+
+  .hero__title {
+    margin: 0;
+    font-size: clamp(2.25rem, 6vw, 4rem);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    font-weight: 800;
+  }
+
+  .hero__highlight {
+    background: linear-gradient(
+      90deg,
+      var(--color-primary),
+      var(--color-accent)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .hero__subtitle {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: clamp(1rem, 2vw, 1.1875rem);
+    max-width: 48ch;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-md);
+    margin-top: var(--space-sm);
+  }
+
+  .hero__btn {
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0.8rem 1.75rem;
+    border-radius: var(--radius-md);
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease,
+      transform 0.15s ease;
+  }
+
+  .hero__btn:hover {
+    transform: translateY(-2px);
+  }
+
+  .hero__btn--primary {
+    background-color: var(--color-primary);
+    color: var(--color-primary-contrast);
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
+  }
+
+  .hero__btn--primary:hover {
+    background-color: var(--color-primary-hover);
+  }
+
+  .hero__btn--ghost {
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    background-color: var(--color-surface);
+  }
+
+  .hero__btn--ghost:hover {
+    background-color: var(--color-surface-hover);
+    border-color: var(--color-primary);
+  }
+</style>

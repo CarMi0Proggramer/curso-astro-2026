@@ -1,0 +1,104 @@
+---
+interface Props {
+  statusCode: number;
+  title: string;
+  message: string;
+}
+
+const { statusCode, title, message } = Astro.props;
+---
+
+<section class="error-state" aria-labelledby="error-state-title">
+  <p class="error-state__code" aria-hidden="true">{statusCode}</p>
+  <h1 id="error-state-title" class="error-state__title">{title}</h1>
+  <p class="error-state__message">{message}</p>
+
+  <div class="error-state__actions">
+    <a class="error-state__btn error-state__btn--primary" href="/">
+      Volver al inicio
+    </a>
+    <slot name="actions" />
+  </div>
+</section>
+
+<style>
+  .error-state {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: calc(var(--space-lg) * 3) var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-md);
+    text-align: center;
+  }
+
+  .error-state__code {
+    margin: 0;
+    font-size: clamp(4.5rem, 16vw, 8rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    background: linear-gradient(
+      90deg,
+      var(--color-primary),
+      var(--color-accent)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .error-state__title {
+    margin: 0;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 800;
+  }
+
+  .error-state__message {
+    margin: 0;
+    color: var(--color-text-muted);
+    max-width: 44ch;
+  }
+
+  .error-state__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-md);
+    margin-top: var(--space-sm);
+  }
+
+  .error-state__btn,
+  .error-state__actions :global(a) {
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease;
+  }
+
+  .error-state__btn--primary {
+    border-color: var(--color-primary);
+    background-color: var(--color-primary);
+    color: var(--color-primary-contrast);
+  }
+
+  .error-state__btn--primary:hover {
+    background-color: var(--color-primary-hover);
+  }
+
+  .error-state__actions :global(a:not(.error-state__btn--primary):hover) {
+    background-color: var(--color-surface-hover);
+    border-color: var(--color-primary);
+  }
+
+  .error-state__actions :global(a:focus-visible) {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+</style>

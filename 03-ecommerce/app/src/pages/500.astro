@@ -1,0 +1,26 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import ErrorState from "../components/ErrorState.astro";
+
+interface Props {
+  error: unknown;
+}
+
+// Log the details on the server only; never expose them to the visitor.
+const { error } = Astro.props;
+console.error("Unhandled server error:", error);
+---
+
+<Layout title="Error del servidor — Shop">
+  <Navbar />
+  <main>
+    <ErrorState
+      statusCode={500}
+      title="Algo salió mal"
+      message="Tuvimos un problema al procesar tu solicitud. Inténtalo de nuevo en unos minutos."
+    >
+      <a slot="actions" href={Astro.url.pathname}>Reintentar</a>
+    </ErrorState>
+  </main>
+</Layout>

@@ -1,0 +1,48 @@
+---
+const { width = "5rem", label = "Cargando…" } = Astro.props;
+---
+
+<span class="button-skeleton" role="status" style={{ width }}>
+  <span class="button-skeleton__label">{label}</span>
+</span>
+
+<style>
+  .button-skeleton {
+    display: inline-block;
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    font: inherit;
+    font-weight: 600;
+    background: linear-gradient(
+      90deg,
+      var(--color-surface-hover) 25%,
+      var(--color-border) 50%,
+      var(--color-surface-hover) 75%
+    );
+    background-size: 200% 100%;
+    animation: button-skeleton-shimmer 1.4s ease-in-out infinite;
+  }
+
+  .button-skeleton__label {
+    display: block;
+    color: transparent;
+    white-space: nowrap;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  @keyframes button-skeleton-shimmer {
+    from {
+      background-position: 200% 0;
+    }
+    to {
+      background-position: -200% 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .button-skeleton {
+      animation: none;
+    }
+  }
+</style>

@@ -1,0 +1,111 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import CategoryList from "../../components/CategoryList.astro";
+import ProductGrid from "../../components/ProductGrid.astro";
+import {
+  getCategories,
+  getCategoryBySlug,
+  getProductsByCategory,
+} from "../../lib/strapi/catalog";
+
+// Rest param: undefined en /categories, "slug" en /categories/slug
+const { slug } = Astro.params;
+
+// Solo se admite un segmento (p. ej. /categories/a/b no es válido)
+if (slug?.includes("/")) {
+  return Astro.rewrite("/404");
+}
+
+let categories = [];
+let category = null;
+let products = [];
+let loadError = false;
+
+try {
+  if (slug) {
+    [category, products] = await Promise.all([
+      getCategoryBySlug(slug),
+      getProductsByCategory(slug),
+    ]);
+  } else {
+    categories = await getCategories();
+  }
+} catch (error) {
+  console.error("Failed to load categories from Strapi:", error);
+  loadError = true;
+}
+
+if (slug && !loadError && !category) {
+  return Astro.rewrite("/404");
+}
+
+const pageTitle = category ? category.name : "Categorías";
+---
+
+<Layout title={`Shop — ${pageTitle}`}>
+  <Navbar />
+  <main class="categories-page">
+    {
+      loadError ? (
+        <p class="categories-page__error" role="alert">
+          No pudimos cargar las categorías. Inténtalo de nuevo más tarde.
+        </p>
+      ) : category ? (
+        <>
+          <header class="categories-page__header">
+            <a class="categories-page__back" href="/categories">
+              ← Todas las categorías
+            </a>
+            <h1 class="categories-page__title">{category.name}</h1>
+          </header>
+          <ProductGrid products={products} />
+        </>
+      ) : (
+        <CategoryList categories={categories} />
+      )
+    }
+  </main>
+</Layout>
+
+<style>
+  .categories-page {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: calc(var(--space-lg) * 1.5) var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .categories-page__header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .categories-page__back {
+    align-self: flex-start;
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+  }
+
+  .categories-page__back:hover {
+    color: var(--color-text);
+  }
+
+  .categories-page__title {
+    margin: 0;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 800;
+  }
+
+  .categories-page__error {
+    margin: 0;
+    padding: var(--space-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface);
+    color: var(--color-text-muted);
+  }
+</style>

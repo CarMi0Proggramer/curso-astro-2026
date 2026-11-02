@@ -1,0 +1,59 @@
+---
+import ProductCard from "./ProductCard.astro";
+
+const { products } = Astro.props;
+---
+
+<section class="product-grid" aria-labelledby="product-grid-title">
+  <h2 id="product-grid-title" class="product-grid__title">Productos</h2>
+
+  {
+    products.length === 0 ? (
+      <p class="product-grid__empty">No hay productos disponibles.</p>
+    ) : (
+      <ul class="product-grid__items">
+        {products.map((product: any) => (
+          <li>
+            <ProductCard
+              name={product.name}
+              slug={product.slug}
+              image={product.image}
+              price={product.price}
+              description={product.description}
+              stock={product.stock ?? 0}
+              category={product.category}
+            />
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</section>
+
+<style>
+  .product-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .product-grid__title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .product-grid__items {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--space-lg);
+  }
+
+  .product-grid__empty {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+</style>

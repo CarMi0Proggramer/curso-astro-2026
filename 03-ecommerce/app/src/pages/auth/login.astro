@@ -1,0 +1,65 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import AuthCard from "../../components/AuthCard.astro";
+
+const params = Astro.url.searchParams;
+const emailError = params.get("emailError");
+const passwordError = params.get("passwordError");
+const generalError = params.get("generalError");
+---
+
+<Layout title="Shop — Iniciar sesión">
+  <Navbar />
+  <main>
+    <AuthCard
+      title="Iniciar sesión"
+      subtitle="Accede a tu cuenta para continuar"
+    >
+      <form class="auth-form" method="post" action="/api/auth/login">
+        <div class="auth-form__field">
+          <label class="auth-form__label" for="email">Email</label>
+          <input
+            class="auth-form__input"
+            type="email"
+            id="email"
+            name="email"
+            placeholder="tucorreo@ejemplo.com"
+            autocomplete="email"
+            required
+          />
+
+          {emailError && <span class="auth-form__error">{emailError}</span>}
+        </div>
+
+        <div class="auth-form__field">
+          <label class="auth-form__label" for="password">Contraseña</label>
+          <input
+            class="auth-form__input"
+            type="password"
+            id="password"
+            name="password"
+            placeholder="••••••••"
+            autocomplete="current-password"
+            required
+          />
+
+          {
+            passwordError && (
+              <span class="auth-form__error">{passwordError}</span>
+            )
+          }
+        </div>
+
+        {generalError && <span class="auth-form__error">{generalError}</span>}
+
+        <button class="auth-form__submit" type="submit">Iniciar sesión</button>
+      </form>
+
+      <p class="auth-form__alt">
+        ¿No tienes cuenta?
+        <a class="auth-form__link" href="/auth/signup"> Crear cuenta</a>
+      </p>
+    </AuthCard>
+  </main>
+</Layout>

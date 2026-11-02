@@ -1,0 +1,66 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Hero from "../components/Hero.astro";
+import CategoryList from "../components/CategoryList.astro";
+import ProductGrid from "../components/ProductGrid.astro";
+import {
+  getCategories,
+  getProducts,
+  type Category,
+  type Product,
+} from "../lib/strapi/catalog";
+
+let categories: Category[] = [];
+let products: Product[] = [];
+let loadError = false;
+
+try {
+  [categories, products] = await Promise.all([getCategories(), getProducts()]);
+} catch (error) {
+  console.error("Failed to load catalog from Strapi:", error);
+  loadError = true;
+}
+---
+
+<Layout title="Shop — Inicio">
+  <Navbar />
+  <main>
+    <Hero />
+
+    <div class="catalog">
+      {
+        loadError ? (
+          <p class="catalog__error" role="alert">
+            No pudimos cargar el catálogo. Inténtalo de nuevo más tarde.
+          </p>
+        ) : (
+          <>
+            <CategoryList categories={categories} />
+            <ProductGrid products={products} />
+          </>
+        )
+      }
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .catalog {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: calc(var(--space-lg) * 1.5) var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--space-lg) * 1.5);
+  }
+
+  .catalog__error {
+    margin: 0;
+    padding: var(--space-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface);
+    color: var(--color-text-muted);
+  }
+</style>

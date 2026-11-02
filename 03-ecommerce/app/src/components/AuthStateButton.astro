@@ -1,0 +1,49 @@
+---
+import { $auth } from "../stores/auth";
+const isLoggedIn = $auth.get().isLoggedIn;
+---
+
+{
+  !isLoggedIn ? (
+    <a class="auth-state__button" href="/auth/login">
+      Login
+    </a>
+  ) : (
+    <button id="logoutBtn" class="auth-state__button">
+      LogOut
+    </button>
+  )
+}
+
+<script>
+  import { actions } from "astro:actions";
+
+  const logoutButton = document.getElementById("logoutBtn");
+  if (logoutButton instanceof HTMLButtonElement) {
+    logoutButton.addEventListener("click", async () => {
+      await actions.auth.logOut.orThrow();
+      location.reload();
+    });
+  }
+</script>
+
+<style>
+  .auth-state__button {
+    border: none;
+    background-color: var(--color-primary);
+    color: var(--color-primary-contrast);
+    font: inherit;
+    font-weight: 600;
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+
+  .auth-state__button:hover {
+    background-color: var(--color-primary-hover);
+  }
+</style>

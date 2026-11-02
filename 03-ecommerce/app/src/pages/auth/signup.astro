@@ -1,0 +1,79 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import AuthCard from "../../components/AuthCard.astro";
+
+const params = Astro.url.searchParams;
+const usernameError = params.get("usernameError");
+const emailError = params.get("emailError");
+const passwordError = params.get("passwordError");
+const generalError = params.get("generalError");
+---
+
+<Layout title="Shop — Crear cuenta">
+  <Navbar />
+  <main>
+    <AuthCard title="Crear cuenta" subtitle="Regístrate para empezar a comprar">
+      <form class="auth-form" method="post" action="/api/auth/signup">
+        <div class="auth-form__field">
+          <label class="auth-form__label" for="username">Usuario</label>
+          <input
+            class="auth-form__input"
+            type="text"
+            id="username"
+            name="username"
+            placeholder="tu_usuario"
+            autocomplete="username"
+          />
+
+          {
+            usernameError && (
+              <span class="auth-form__error">{usernameError}</span>
+            )
+          }
+        </div>
+
+        <div class="auth-form__field">
+          <label class="auth-form__label" for="email">Email</label>
+          <input
+            class="auth-form__input"
+            type="email"
+            id="email"
+            name="email"
+            placeholder="tucorreo@ejemplo.com"
+            autocomplete="email"
+          />
+
+          {emailError && <span class="auth-form__error">{emailError}</span>}
+        </div>
+
+        <div class="auth-form__field">
+          <label class="auth-form__label" for="password">Contraseña</label>
+          <input
+            class="auth-form__input"
+            type="password"
+            id="password"
+            name="password"
+            placeholder="••••••••"
+            autocomplete="new-password"
+          />
+
+          {
+            passwordError && (
+              <span class="auth-form__error">{passwordError}</span>
+            )
+          }
+        </div>
+
+        {generalError && <span class="auth-form__error">{generalError}</span>}
+
+        <button class="auth-form__submit" type="submit">Crear cuenta</button>
+      </form>
+
+      <p class="auth-form__alt">
+        ¿Ya tienes cuenta?
+        <a class="auth-form__link" href="/auth/login"> Iniciar sesión</a>
+      </p>
+    </AuthCard>
+  </main>
+</Layout>

@@ -5,9 +5,25 @@ services:
       dockerfile: Dockerfile
     ports:
       - 3000:3000
+    env_file:
+      # Env variables de Astro
+      - ./app/.env
+
   strapi:
     build:
       context: ./cms
       dockerfile: Dockerfile
+    restart: unless-stopped
     ports:
-      - 1337:1337
+      - "1337:1337"
+    env_file:
+      # Env variables de Strapi (obligatorias)
+      - ./cms/.env
+    volumes:
+      # Persistencia para SQLite (.tmp) y para los archivos multimedia subidos (public/uploads)
+      - strapi-data:/opt/app/.tmp
+      - strapi-uploads:/opt/app/public/uploads
+
+volumes:
+  strapi-data:
+  strapi-uploads:

@@ -1,15 +1,8 @@
-FROM node:22.23.4
-
-# Actualizar e instalar dependencias necesarias (incluyendo libvips-dev para sharp)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    python3 \
-    libvips-dev \
-    git \
-    && rm -rf /var/lib/apt/lists/*
-
-ARG NODE_ENV=development
-ENV NODE_ENV=${NODE_ENV}
+# ==========================================
+# 1. Build stage (Construcción)
+# ==========================================
+FROM node:22-alpine AS build
+RUN apk update && apk add --no-cache build-base gcc autoconf automake zlib-dev libpng-dev bash vips-dev python3 make g++ > /dev/null 2>&1
 
 WORKDIR /opt/
 COPY package.json package-lock.json ./
@@ -19,7 +12,30 @@ ENV PATH=/opt/node_modules/.bin:$PATH
 
 WORKDIR /opt/app
 COPY . .
+
+ENV NODE_ENV=production
+RUN npm run build
+
+# ==========================================
+# 2. Production stage (Ejecución limpia)
+# ==========================================
+FROM node:22-alpine
+RUN apk add --no-cache vips-dev python3 make g++
+ENV NODE_ENV=production
+
+WORKDIR /opt/
+COPY --from=build /opt/package.json /opt/package-lock.json ./
+RUN npm ci --omit=dev && npm cache clean --force
+ENV PATH=/opt/node_modules/.bin:$PATH
+
+WORKDIR /opt/app
+COPY --from=build /opt/app ./
+
 RUN chown -R node:node /opt/app
 USER node
 EXPOSE 1337
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD wget --quiet --tries=1 --spider http://localhost:1337/_health || exit 1
+
 CMD ["npm", "run", "start"]
